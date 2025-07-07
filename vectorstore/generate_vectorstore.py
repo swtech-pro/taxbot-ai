@@ -1,32 +1,37 @@
-"""Generate FAISS vector store from PDF documents."""
+# ? Vectorstore Generator Script (Final Version)
+# This script generates FAISS vectorstore from PDF files using LangChain + HuggingFace embeddings.
 
-from langchain.document_loaders import PyPDFLoader
+# ??? Install/Upgrade required packages if not already installed:
+# !pip install --upgrade langchain langchain-community faiss-cpu sentence-transformers
+
+from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 import os
 
-# Step 1: List of PDF files
-pdf_files = [
-    "pdfs/income-tax-act-1961.pdf",
-    "pdfs/a1961-43.pdf",
-    "pdfs/income-tax-rules-1962.pdf",
-]
-
-# Step 2: Load and combine all documents
+# ?? Path to your PDF folder
+pdf_dir = "pdfs"
 all_docs = []
-for pdf in pdf_files:
-    loader = PyPDFLoader(pdf)
-    docs = loader.load()
-    all_docs.extend(docs)
 
-# Step 3: Split into chunks
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-chunks = text_splitter.split_documents(all_docs)
+# ?? Load all PDFs
+for file in os.listdir(pdf_dir):
+    if file.endswith(".pdf"):
+        print(f"?? Loading {file} ...")
+        loader = PyPDFLoader(os.path.join(pdf_dir, file))
+        all_docs.extend(loader.load())
 
-# Step 4: Generate embeddings
-embedding = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+# ?? Split documents into chunks
+splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+chunks = splitter.split_documents(all_docs)
+print(f"? Total chunks created: {len(chunks)}")
 
-# Step 5: Create and save FAISS vectorstore
-vectorstore = FAISS.from_documents(chunks, embedding)
+# ?? Generate embeddings using Hugging Face model
+embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+
+# ??? Create FAISS vectorstore
+vectorstore = FAISS.from_documents(chunks, embedding_model)
+
+# ?? Save to local folder
 vectorstore.save_local("vectorstore/income_tax_faiss")
+print("? FAISS vectorstore saved at vectorstore/income_tax_faiss")
