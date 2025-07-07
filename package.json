@@ -7,11 +7,10 @@
     "start": "next start"
   },
   "dependencies": {
-    "ai": "latest",
-    "langchain": "^0.2.0",
+    "ai": "^4.3.16",
+    "langchain": "^0.3.29",
     "next": "13",
     "react": "18",
-    "react-dom": "18",
-    "sentence-transformers": "latest"
+    "react-dom": "18"
   }
 }

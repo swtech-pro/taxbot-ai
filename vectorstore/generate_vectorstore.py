@@ -1,4 +1,4 @@
-# vectorstore/generate_vectorstore.py
+"""Generate FAISS vector store from PDF documents."""
 
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -10,7 +10,7 @@ import os
 pdf_files = [
     "pdfs/income-tax-act-1961.pdf",
     "pdfs/a1961-43.pdf",
-    "pdfs/income-tax-rules-1962.pdf"
+    "pdfs/income-tax-rules-1962.pdf",
 ]
 
 # Step 2: Load and combine all documents
@@ -30,4 +30,3 @@ embedding = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L
 # Step 5: Create and save FAISS vectorstore
 vectorstore = FAISS.from_documents(chunks, embedding)
 vectorstore.save_local("vectorstore/income_tax_faiss")
-

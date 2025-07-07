@@ -1,11 +1,7 @@
-// api/chat.ts
-
 import { NextRequest, NextResponse } from 'next/server';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { loadQAStuffChain } from 'langchain/chains';
 import { HuggingFaceInferenceEmbeddings } from 'langchain/embeddings/hf';
 import { FAISS } from 'langchain/vectorstores/faiss';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { HuggingFaceInference } from 'langchain/llms/hf';
 
 export const runtime = 'edge';
@@ -17,7 +13,7 @@ export async function POST(req: NextRequest) {
   // Load FAISS vectorstore from file
   const vectorStore = await FAISS.load(
     'vectorstore/income_tax_faiss',
-    new HuggingFaceInferenceEmbeddings()
+    new HuggingFaceInferenceEmbeddings(),
   );
 
   // Retrieve relevant documents
